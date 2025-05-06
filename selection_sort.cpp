@@ -1,18 +1,23 @@
 #include <iostream>
+
 using namespace std;
 
 
 void insertion_sort(int* arr, int n){
-    for (int r = 1; r < n; r++)
+    for (int i = 0; i < n; i++)
     {
-        for (int l = 0; l < r; l++)
+        int menor = i;
+        for (int j = i+1; j < n; j++)
         {
-            if (arr[l]>arr[r])
+            if (arr[j]<arr[menor])
             {
-                // insert r at l
+                menor = j;
             }
             
         }
+            int temp = arr[i];
+            arr[i] = arr[menor];
+            arr[menor] = temp;
         
     }
     
