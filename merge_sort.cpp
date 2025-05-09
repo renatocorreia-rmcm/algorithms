@@ -1,42 +1,61 @@
 #include <iostream>
 using namespace std;
 
+void merge(int* arr, int l, int r) {
+    int m = (l + r) / 2;
+    int temp[r - l + 1];
 
-void separate(int* arr, int n){
     
-    int* a = new int[n/2];
-    int* b = new int[(n+1)/2];
-    for (int i = 0; i < n/2; i++)
-    {
-        a[i] = arr[i];
-    }
-    for (int i = 0; i < n+1/2; i++)
-    {
-        b[i] = arr[i+n/2];
+    for (int i = l; i <= r; i++) {
+        temp[i - l] = arr[i];
     }
 
+    int i1 = 0;           
+    int i2 = m - l + 1;   
+    int curr = l;
 
-    return merge_sort(a, n/2) + merge_sort(b, (n+1)/2);
-    
+    while (i1 <= m - l && i2 <= r - l) {
+        if (temp[i1] <= temp[i2]) {
+            arr[curr++] = temp[i1++];
+        } else {
+            arr[curr++] = temp[i2++];
+        }
+    }
+
+
+    while (i1 <= m - l) {
+        arr[curr++] = temp[i1++];
+    }
+
+    while (i2 <= r - l) {
+        arr[curr++] = temp[i2++];
+    }
 }
-void unite(int* arr, int n){
 
-}
 
-int* merge_sort(int* arr, int n){
-
-    if (n)
+void mergesort(int* arr, int l, int r){
+    if (l<r)
     {
-        /* code */
+        int m = (l+r)/2;
+        mergesort(arr, l, m);
+        mergesort(arr, m+1, r);
+        merge(arr, l, r);
     }
     
-
 }
 
 
 int main(){
 
+    int arr[] = {1, 9, 2, 8, 3, 7, 4, 6, 5, 0};
 
+    mergesort(arr, 0, 9);
+
+    for (int i = 0; i < 10; i++)
+    {
+        cout << arr[i] << " ";
+    }
+    
 
     return 0;
 }
