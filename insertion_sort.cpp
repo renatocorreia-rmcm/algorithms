@@ -3,17 +3,17 @@ using namespace std;
 
 
 void insertion_sort(int* arr, int n){
+    int v; int j;
     for (int r = 1; r < n; r++)
     {
-        for (int l = 0; l < r; l++)
+        v = arr[r]; j = r-1;
+
+        while (j>=0 && arr[j]>v)
         {
-            if (arr[l]>arr[r])
-            {
-                // insert r at l
-            }
-            
+            arr[j+1] = arr[j];
+            j--;
         }
-        
+        arr[j+1] = v;
     }
     
 }
