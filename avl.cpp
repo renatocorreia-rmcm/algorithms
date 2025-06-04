@@ -9,9 +9,7 @@ int max(int a, int b){
     return a;
 }
 
-
 class node{
-
 public:
     int value;
     node* left;
@@ -25,20 +23,12 @@ public:
     }
 };
 
-
-
-
 class avl{
-
-    public:
-
+public:
     node* root;
 
-
     void print(node* root){
-
         cout << root-> value << " ";
-
         if (root->left != nullptr)
         {
             print(root->left);
@@ -47,7 +37,6 @@ class avl{
         {
             print(root->right);
         }
-
     }
 
     void print(){
@@ -58,74 +47,57 @@ class avl{
         cout << "\n";
     }
 
-    void insert(int value, node* rt){
-
-
-        // insert as normal bst
-
-        if (value < rt->value)
-        {
-            
-            if (rt->left == nullptr)
-            {
-                rt->left = new node(value);
-            }
-            else {
-                insert(value, rt->left);
-            }
-            
+    node* insert(int value, node* rt){
+        if (rt == nullptr) {
+            return new node(value);
         }
-
-        else  // value >= root
-        {
-
-            if (rt->right == nullptr)
-            {
-                rt->right = new node(value);
-            }
-            else {
-                insert(value, rt->right);
-            }
-            
+        if (value < rt->value) {
+            rt->left = insert(value, rt->left);
+        } else {
+            rt->right = insert(value, rt->right);
         }
-
-
-        // refresh traversed nodes heights
 
         rt->height = 1 + max(h(rt->left), h(rt->right));
-
-
-        // check traversed nodes balances and rotate if necessary
-
         int balance = get_balance(rt);
 
-        if (balance < -1 && value >= rt->right->value) left_rotate(rt) ;
-        
-        else if (balance > 1 && value < rt->left->value) right_rotate(rt) ;
-        
-        else if (balance > 1 && value >= rt->left->value){
-            left_rotate(rt->left);
-            right_rotate(rt);
+        // Left Right and Left Left
+        if (balance > 1) {
+            if (value < rt->left->value) {
+                return right_rotate(rt);
+            } else {
+                rt->left = left_rotate(rt->left);
+                return right_rotate(rt);
+            }
         }
-        else if (balance < -1 && value < rt->right->value){
-            right_rotate(rt->right);
-            left_rotate(rt);
+        // Right Left and Right Right
+        if (balance < -1) {
+            if (value > rt->right->value) {
+                return left_rotate(rt);
+            } else {
+                rt->right = right_rotate(rt->right);
+                return left_rotate(rt);
+            }
         }
-
+        return rt;
     }
 
-    void left_rotate(node* rt){
+    void insert(int value){
+        root = insert(value, root);
+    }
+
+    node* left_rotate(node* rt){
         node* r = rt->right;
         node* rl = r->left;
 
         r->left = rt;
         rt->right = rl;
-        rt->height = max(h(rt->left),h(rt->right))+1;
-        r->height = max(h(r->left),h(r->right))+1;
+        rt->height = max(h(rt->left), h(rt->right)) + 1;
+        r->height = max(h(r->left), h(r->right)) + 1;
 
-        this->root = r;
+        return r;
     }
-    void right_rotate(node* rt){
+
+    node* right_rotate(node* rt){
         node* l = rt->left;
         node* lr = l->right;
 
@@ -133,7 +105,8 @@ class avl{
         rt->left = lr;
         rt->height = max(h(rt->left), h(rt->right)) + 1;
         l->height = max(h(l->left), h(l->right)) + 1;
-        this->root = l;
+
+        return l;
     }
 
     int get_balance(node* rt){
@@ -144,7 +117,6 @@ class avl{
         return h(rt->left)-h(rt->right);
     }
 
-
     int h(node* rt){
         if (rt == nullptr)
         {
@@ -153,43 +125,31 @@ class avl{
         return 1 + max(h(rt->left), h(rt->right));
     }
 
-    void insert(int value){
-        if (root == nullptr)
-        {
-            root = new node(value);
-            return;        
-        }
-        else
-        {
-            insert(value, this->root);
-        } 
-    }
-
     avl(){
         root = nullptr;
     }
-    
 };
 
-
-
 int main(){
-
-
     avl a;
 
-    a.insert(1);
-    a.insert(2);
-    a.insert(3);
     a.insert(4);
-    a.insert(5);
-
     a.print();
 
+    a.insert(6);
+    a.print();
 
+    a.insert(8);
+    a.print();
 
+    a.insert(3);
+    a.print();
 
+    a.insert(2);
+    a.print();
 
+    a.insert(5);
+    a.print();
 
     return 0;
 }
