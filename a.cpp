@@ -1,13 +1,6 @@
 #include <iostream>
 using namespace std;
 
-int max(int a, int b){
-    if (b>a)
-    {
-        return b;
-    }
-    return a;
-}
 
 class node{
 public:
@@ -124,7 +117,6 @@ public:
         }
         return 1 + max(h(rt->left), h(rt->right));
     }
-
     void clear(node* root){
         if (root->left != nullptr)
         {
@@ -141,51 +133,43 @@ public:
         if (root!=nullptr)
         {
             clear(this->root);
-            root = nullptr;
         }
     }
-
 
     avl(){
         root = nullptr;
     }
 };
 
+
+
+
+
 int main(){
-    avl a;
 
-    a.insert(4);
-    a.print();
+    int t; cin >> t;
 
-    a.insert(6);
-    a.print();
+    int query;
 
-    a.insert(8);
-    a.print();
+    while (t--)
+    {
+        cin >> query;
 
-    a.insert(3);
-    a.print();
+        if (query==1)
+        {
+            /* code */
+        }
+        if (query==2)
+        {
+            /* code */
+        }
+        
+        
+    }
+    
 
-    a.insert(2);
-    a.print();
 
-    a.insert(5);
-    a.print();
 
-    a.clear();
-    a.print();
-
-    a.insert(8);
-    a.print();
-
-    a.insert(3);
-    a.print();
-
-    a.insert(2);
-    a.print();
-
-    a.insert(5);
-    a.print();
 
     return 0;
 }
