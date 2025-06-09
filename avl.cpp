@@ -144,7 +144,70 @@ public:
             root = nullptr;
         }
     }
+    node* min_value_node(node* rt) {
+        node* current = rt;
+        while (current->left != nullptr)
+            current = current->left;
+        return current;
+    }
 
+    node* remove(int value, node* rt) {
+        if (rt == nullptr)
+            return rt;
+
+        if (value < rt->value) {
+            rt->left = remove(value, rt->left);
+        } else if (value > rt->value) {
+            rt->right = remove(value, rt->right);
+        } else {
+            if (rt->left == nullptr || rt->right == nullptr) {
+                node* temp = rt->left ? rt->left : rt->right;
+                if (temp == nullptr) {
+                    temp = rt;
+                    rt = nullptr;
+                } else {
+                    *rt = *temp;
+                }
+                delete temp;
+            } else {
+                node* temp = min_value_node(rt->right);
+                rt->value = temp->value;
+                rt->right = remove(temp->value, rt->right);
+            }
+        }
+
+        if (rt == nullptr)
+            return rt;
+
+        rt->height = 1 + max(h(rt->left), h(rt->right));
+        int balance = get_balance(rt);
+
+        // Left Left
+        if (balance > 1 && get_balance(rt->left) >= 0)
+            return right_rotate(rt);
+
+        // Left Right
+        if (balance > 1 && get_balance(rt->left) < 0) {
+            rt->left = left_rotate(rt->left);
+            return right_rotate(rt);
+        }
+
+        // Right Right
+        if (balance < -1 && get_balance(rt->right) <= 0)
+            return left_rotate(rt);
+
+        // Right Left
+        if (balance < -1 && get_balance(rt->right) > 0) {
+            rt->right = right_rotate(rt->right);
+            return left_rotate(rt);
+        }
+
+        return rt;
+    }
+
+    void remove(int value) {
+        root = remove(value, root);
+    }
 
     avl(){
         root = nullptr;
@@ -185,6 +248,9 @@ int main(){
     a.print();
 
     a.insert(5);
+    a.print();
+
+    a.remove(3);
     a.print();
 
     return 0;
