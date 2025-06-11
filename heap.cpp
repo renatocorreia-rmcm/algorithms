@@ -13,10 +13,17 @@ public:
     int* arr;
     int n;
 
+    void print(){
+        for (int i = 1; i <= n; i++)
+        {
+            cout << arr[i] << ' ';
+        }
+    }
+
 
     void heap_bottom_up(){
         int i_lastparent = n/2;  // tree last parent (rightmost node not leaf)
-        for (int i = i_lastparent; i > 1; i--)  // iterate from last parent to root
+        for (int i = i_lastparent; i >= 1; i--)  // iterate from last parent to root
         {
             int k = i;
             int v = arr[k];
@@ -48,23 +55,22 @@ public:
                 {
                     arr[k] = arr[i_biggerchild];
                     k = i_biggerchild;
+                    i_leftchild  = 2*k;
+                    i_rightchild = 2*k+1;
                 }
-
-                arr[k] = v;
-                i_leftchild  = 2*k;
-                i_rightchild = 2*k+1;
-                
             }
+            arr[k] = v;
+            i_leftchild  = 2*k;
+            i_rightchild = 2*k+1;
             
 
 
         }
-        
     }
 
-    heap(int* arr, int n){
+    heap(int* a, int n){
 
-        this->arr = arr;
+        this->arr = a;
         this->n=n;
         heap_bottom_up();
 
@@ -74,6 +80,12 @@ public:
 
 
 int main(){
+
+    int* arr = new int[8]{0, 2, 9, 7, 6, 5, 8, 10};
+
+    heap h = heap(arr, 7);
+
+    h.print();
 
 
 
