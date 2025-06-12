@@ -12,7 +12,7 @@ size: não conta com primeiro elemento (null)
 index: conta com primeiro elemento (null, 0)
 */
 
-class heap_BottomUp
+class heap
 {
 public:
     int* arr;
@@ -95,7 +95,7 @@ public:
         heap_bottom_up();
     }
 
-    heap_BottomUp(int* a, int n){
+    heap(int* a, int n){
 
         max_size = n;
         this->max_size = max_size;
@@ -113,7 +113,7 @@ int main(){
 
     int* arr = new int[8]{0, 2, 9, 7, 6, 5, 8, 10};
 
-    heap_BottomUp h = heap_BottomUp(arr, 7);
+    heap h = heap(arr, 7);
 
     h.print();
 
