@@ -1,174 +1,188 @@
 #include <iostream>
 using namespace std;
 
+/*
+left    2*i
+right   2*i+1
+parent  i//2
+*/
 
-class node{
+/*
+size: não conta com primeiro elemento (null)
+index: conta com primeiro elemento (null, 0)
+*/
+
+class heap_BottomUp
+{
 public:
-    int value;
-    node* left;
-    node* right;
-    int height;
-
-    node(int value): value(value){
-        left = nullptr;
-        right = nullptr;
-        height = 0;
-    }
-};
-
-class avl{
-public:
-    node* root;
-
-    void print(node* root){
-        cout << root-> value << " ";
-        if (root->left != nullptr)
-        {
-            print(root->left);
-        }
-        if (root->right != nullptr)
-        {
-            print(root->right);
-        }
-    }
+    int* arr;
+    int n;
+    int max_size;
 
     void print(){
-        if (root!=nullptr)
+        for (int i = 1; i <= n; i++)
         {
-            print(this->root);
+            cout << arr[i] << ' ';
         }
-        cout << "\n";
+        cout << '\n';
     }
 
-    node* insert(int value, node* rt){  // return avl new root
-        if (rt == nullptr) {
-            return new node(value);
-        }
-        if (value < rt->value) {
-            rt->left = insert(value, rt->left);
-        } else {
-            rt->right = insert(value, rt->right);
-        }
 
-        rt->height = 1 + max(h(rt->left), h(rt->right));
-        int balance = get_balance(rt);
+    void heap_bottom_up(){
+        int i_lastparent = n/2;  // tree last parent (rightmost node not leaf)
+        for (int i = i_lastparent; i >= 1; i--)  // iterate from last parent to root
+        {
+            int k = i;
+            int v = arr[k];
 
-        // Left Right and Left Left
-        if (balance > 1) {
-            if (value < rt->left->value) {
-                return right_rotate(rt);
-            } else {
-                rt->left = left_rotate(rt->left);
-                return right_rotate(rt);
+            bool heap = false;
+
+            int i_leftchild = 2*k;
+            int i_rightchild = 2*k+1;
+
+            
+            while (!heap && i_leftchild <=n)
+            {
+                
+            /*   SET BIGGER CHILD   */
+            int i_biggerchild = i_leftchild;  // default bigger since right child may not exist
+            if (i_biggerchild < n)  // range checking to see if right child exists
+            {
+                if (arr[i_rightchild] > arr[i_leftchild])
+                {
+                    i_biggerchild = i_rightchild;
+                }
+            }
+            /*  COMPARE TO PARENT   */
+            if (v>=arr[i_biggerchild])
+            {
+                heap = true;
+            }
+            else
+            {
+                arr[k] = arr[i_biggerchild];
+                k = i_biggerchild;
+                i_leftchild  = 2*k;
+                i_rightchild = 2*k+1;
             }
         }
-        // Right Left and Right Right
-        if (balance < -1) {
-            if (value > rt->right->value) {
-                return left_rotate(rt);
-            } else {
-                rt->right = right_rotate(rt->right);
-                return left_rotate(rt);
+        arr[k] = v;
+        i_leftchild  = 2*k;
+        i_rightchild = 2*k+1;
+    }
+}
+
+void insert(int v){
+    n++;
+    arr[n] = v;  // insert new value at the end of the heap
+    int k = n;  // current node index
+    int i_parent = k/2;  // parent index
+
+    while (k>1 && arr[i_parent]<arr[k])  // while not root and parent is smaller than current node
+    {
+        swap(arr[k], arr[i_parent]);  // swap with parent
+        k = i_parent;  // move to parent
+        i_parent = k/2;  // update parent index
+    }
+
+}
+bool empty(){
+    return n == 0;
+}
+
+void heapify(int i_parent){        
+    
+            int v = arr[i_parent];
+
+            int i_leftchild = 2*i_parent;
+            int i_rightchild = 2*i_parent+1;
+            bool heap = false;
+            
+            while (!heap && i_leftchild <=n)
+            {
+                
+            /*   SET BIGGER CHILD   */
+            int i_biggerchild = i_leftchild;  // default bigger since right child may not exist
+            if (i_biggerchild < n)  // range checking to see if right child exists
+            {
+                if (arr[i_rightchild] > arr[i_leftchild])
+                {
+                    i_biggerchild = i_rightchild;
+                }
             }
-        }
-        return rt;
+            /*  COMPARE TO PARENT   */
+            if (v>=arr[i_biggerchild])
+            {
+                heap = true;
+            }
+            else
+            {
+                arr[i_parent] = arr[i_biggerchild];
+                i_parent = i_biggerchild;
+                i_leftchild  = 2*i_parent;
+                i_rightchild = 2*i_parent+1;
+            }
+            }
+        arr[i_parent] = v;
+        i_leftchild  = 2*i_parent;
+        i_rightchild = 2*i_parent+1;
     }
 
-    void insert(int value){
-        root = insert(value, root);
+    int remove_root(){
+        if (empty()) return -1;
+        int ret = arr[1];
+
+        arr[1] = arr[n];
+        n--;
+        heapify(1);
+        return ret;
     }
 
-    node* left_rotate(node* rt){
-        node* r = rt->right;
-        node* rl = r->left;
+    heap_BottomUp(int* a, int n){
 
-        r->left = rt;
-        rt->right = rl;
-        rt->height = max(h(rt->left), h(rt->right)) + 1;
-        r->height = max(h(r->left), h(r->right)) + 1;
+        max_size = n;
+        this->max_size = max_size;
+        
+        this->arr = a;
+        this->n=n;
+        heap_bottom_up();
 
-        return r;
-    }
-
-    node* right_rotate(node* rt){
-        node* l = rt->left;
-        node* lr = l->right;
-
-        l->right = rt;
-        rt->left = lr;
-        rt->height = max(h(rt->left), h(rt->right)) + 1;
-        l->height = max(h(l->left), h(l->right)) + 1;
-
-        return l;
-    }
-
-    int get_balance(node* rt){
-        if (rt==nullptr)
-        {
-            return 0;
-        }
-        return h(rt->left)-h(rt->right);
-    }
-
-    int h(node* rt){
-        if (rt == nullptr)
-        {
-            return -1;
-        }
-        return 1 + max(h(rt->left), h(rt->right));
-    }
-    void clear(node* root){
-        if (root->left != nullptr)
-        {
-            clear(root->left);
-        }
-        if (root->right != nullptr)
-        {
-            clear(root->right);
-        }
-        delete root;
-    }
-
-    void clear(){
-        if (root!=nullptr)
-        {
-            clear(this->root);
-        }
-    }
-
-    avl(){
-        root = nullptr;
     }
 };
-
-
 
 
 
 int main(){
 
-    int t; cin >> t;
+    int t; cin>>t;
 
-    int query;
-
+    int n;
+    int* a;
+    
     while (t--)
     {
-        cin >> query;
+        cin >> n;
+        a = new int[n+1];
+        a[0] = 0;
 
-        if (query==1)
+        for (int i = 1; i < n+1; i++)
         {
-            /* code */
+            cin >> a[i];
         }
-        if (query==2)
+
+        heap_BottomUp h(a, n);
+
+        while (h.n >= 2)
         {
-            /* code */
+            int a = h.remove_root();
+            int b = h.remove_root();
+            h.insert(a+b-1);
         }
+        cout << h.remove_root() << '\n';
         
-        
+        delete[] a;
     }
     
-
-
 
 
     return 0;
