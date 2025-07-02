@@ -3,35 +3,51 @@
 using namespace std;
 
 
-int bs(int* a, int l, int r, int k){
-    if (r>=l)
+int binary_search(int* arr, int l, int r, int k){
+    /*
+    k: target
+    l: slice start index, inclusive
+    r: slice end index, inclusive
+    */
+    if (r>l)  // len(slice)>0  // maybe could do len(slice)>1 and always return last found index, being target or not (would be the 'to insert' position)
     {
-        int m = (l+r)/2;
-        if (k == a[m])
+        int m = (l+r)/2;  // slice mid index
+
+        if (k == arr[m])  // found
         {
             return m;
         }
-        if (k < a[m])
+
+        if (k < arr[m])  // is at left
         {
-            return bs(a, l, m-1, k);
+            return binary_search(arr, l, m-1, k);
         }
-        else{
-            return bs(a, m+1, r, k);
-        }
-        
-        
+        else  // is at right
+        {
+            return binary_search(arr, m+1, r, k);
+        }       
     }
-    return -1;
+    return k>arr[r] ? r+1 : r;  // not found - no more slice to search  // return n if k is bigger than every element of array
+}
+
+int binary_search(int* arr, int n, int k){
+    /*
+    return: index of found element or index of where it should be inserted
+    */
+    return binary_search(arr, 0, n-1, k);
 }
 
 
 
 int main(){
 
+    //         0 1 2 3 4 5  6 
+    int a[] = {1,3,4,5,7,8,10};
+    int n = sizeof(a)/sizeof(int);
 
-    int a[] = {1,3,4,5,7,8,9};
-
-    cout << bs(a, 0, 6, 4)<<" ";
+    cout << binary_search(a, n, 3)<<'\n';
+    cout << binary_search(a, n, 9)<<'\n';
+    cout << binary_search(a, n, 11)<<'\n';
 
 
     return 0;
