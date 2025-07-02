@@ -2,46 +2,57 @@
 
 using namespace std;
 
-void swap(int& a, int& b){
+
+void swap(int& a, int& b){  // auxiliary function
     int temp = a;
     a = b;
     b = temp;
 }
 
-int partition(int* a, int l, int r){
-    int p = a[l];
+
+int pivoting(int* arr, int l, int r){  // pivot arr[l:r]  ->  {ai<pivot} + [pivot] + {ai>pivot}  // return pivot index
+    
+    int pivot = arr[l];
     int i = l;
     int j = r+1;
-    do
+
+    do  // swap all {ai>pivot in left} with {ai<pivot in right}
     {
-        do
+        do // search first element not in place from left-start 
         {
             i++;
-        } while (!((a[i] >= p) || (i >= r)));
+        } while ((arr[i] < pivot) && (i < r));  
 
-        do
+        do  // search first element not in place from right-start
         {
             j--;
-        } while (!(a[j]<=p));
+        } while (arr[j]>pivot); 
 
-        swap(a[i], a[j]);
+        // swap both elements not in place
+        swap(arr[i], arr[j]);
         
     } while (!(i>=j));
     
-    swap (a[i], a[j]);
-    swap (a[l], a[j]);
+    swap (arr[i], arr[j]);
+    swap (arr[l], arr[j]);
 
     return j;
 }
 
-void quicksort(int* a, int l, int r){
-    if (l<r){
-        int s = partition(a, l, r);  // split position
 
-        quicksort(a, l, s-1);
-        quicksort(a, s+1, r);
+void quicksort(int* arr, int l, int r){
+    
+    if (l<r){
+        int i_pivot = pivoting(arr, l, r);  // pivot index
+
+        quicksort(arr, l, i_pivot-1);
+        quicksort(arr, i_pivot+1, r);
     }
 
+}
+
+void quicksort(int* arr, int n){
+    quicksort(arr, 0, n-1);
 }
 
 
@@ -50,17 +61,16 @@ void quicksort(int* a, int l, int r){
 int main(){
 
 
-    int a[] = {5, 2, 1, 7, 0};
+    int arr[] = {5, 2, 1, 7, 0};
+    int n = sizeof(arr)/sizeof(int);
 
-    quicksort(a, 0, 4);
+    quicksort(arr, n);
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < n; i++)
     {
-        cout << a[i] << " ";
+        cout << arr[i] << " ";
     }
     
-
-
 
     return 0;
 }
