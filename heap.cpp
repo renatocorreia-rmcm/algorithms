@@ -27,126 +27,108 @@ public:
         cout << '\n';
     }
 
+    void heap_bottom_up(){  // builds heap above ready made array
 
-    void heap_bottom_up(){
-        int i_lastparent = n/2;  // tree last parent (rightmost node not leaf)
+        int i_lastparent = n/2;  // last parent in tree (rightmost node not leaf)
         for (int i = i_lastparent; i >= 1; i--)  // iterate from last parent to root
         {
-            int k = i;
-            int v = arr[k];
-
-            bool heap = false;
+            int k = i;  // parent index
+            int v = arr[k];  // parent value
 
             int i_leftchild = 2*k;
             int i_rightchild = 2*k+1;
 
+            bool heapfiyed = false;
             
-            while (!heap && i_leftchild <=n)
+            while (!heapfiyed && i_leftchild <=n)
             {
                 
-            /*   SET BIGGER CHILD   */
-            int i_biggerchild = i_leftchild;  // default bigger since right child may not exist
-            if (i_biggerchild < n)  // range checking to see if right child exists
-            {
-                if (arr[i_rightchild] > arr[i_leftchild])
+                /*   SET BIGGER CHILD   */
+                int i_biggerchild = i_leftchild;  // default bigger since right child may not exist
+                
+                if ((i_rightchild <= n)  &&  (arr[i_leftchild] < arr[i_rightchild]))  // rightchild exists  and  is bigger than left
                 {
                     i_biggerchild = i_rightchild;
                 }
+                
+                /*  COMPARE TO PARENT   */
+                if (v>=arr[i_biggerchild])
+                {
+                    heapfiyed = true;
+                }
+                else
+                {  // swap parent with bigger child 
+                    arr[k] = arr[i_biggerchild];
+                    k = i_biggerchild;
+                    i_leftchild  = 2*k;
+                    i_rightchild = 2*k+1;
+                }
             }
-            /*  COMPARE TO PARENT   */
-            if (v>=arr[i_biggerchild])
-            {
-                heap = true;
-            }
-            else
-            {
-                arr[k] = arr[i_biggerchild];
-                k = i_biggerchild;
-                i_leftchild  = 2*k;
-                i_rightchild = 2*k+1;
-            }
+            arr[k] = v;
+            i_leftchild  = 2*k;
+            i_rightchild = 2*k+1;
         }
-        arr[k] = v;
-        i_leftchild  = 2*k;
-        i_rightchild = 2*k+1;
-    }
-}
-
-void insert(int v){
-    n++;
-    arr[n] = v;  // insert new value at the end of the heap
-    int k = n;  // current node index
-    int i_parent = k/2;  // parent index
-
-    while (k>1 && arr[i_parent]<arr[k])  // while not root and parent is smaller than current node
-    {
-        swap(arr[k], arr[i_parent]);  // swap with parent
-        k = i_parent;  // move to parent
-        i_parent = k/2;  // update parent index
     }
 
-}
-bool empty(){
-    return n == 0;
-}
+    void insert(int v){  // TOP-DOWN
+        n++;
+        arr[n] = v;  // insert new value at the end of the heap
+        int k = n;  // current node index
+        int i_parent = k/2;  // parent index
 
-void heapify(int i_parent){        
-    
-            int v = arr[i_parent];
+        // HEAPIFY
+        
+        while (k>1 && arr[i_parent]<arr[k])  // while not root and parent is smaller than current node
+        {
+            swap(arr[k], arr[i_parent]);  // swap with parent
+            k = i_parent;  // move to parent
+            i_parent = k/2;  // update parent index
+        }
 
-            int i_leftchild = 2*i_parent;
-            int i_rightchild = 2*i_parent+1;
-            bool heap = false;
-            
-            while (!heap && i_leftchild <=n)
-            {
-                
-            /*   SET BIGGER CHILD   */
-            int i_biggerchild = i_leftchild;  // default bigger since right child may not exist
-            if (i_biggerchild < n)  // range checking to see if right child exists
-            {
-                if (arr[i_rightchild] > arr[i_leftchild])
-                {
-                    i_biggerchild = i_rightchild;
-                }
-            }
-            /*  COMPARE TO PARENT   */
-            if (v>=arr[i_biggerchild])
-            {
-                heap = true;
-            }
-            else
-            {
-                arr[i_parent] = arr[i_biggerchild];
-                i_parent = i_biggerchild;
-                i_leftchild  = 2*i_parent;
-                i_rightchild = 2*i_parent+1;
-            }
-            }
-        arr[i_parent] = v;
-        i_leftchild  = 2*i_parent;
-        i_rightchild = 2*i_parent+1;
     }
 
-    int remove_root(){
-        if (empty()) return -1;
-        int ret = arr[1];
+    void remove_root(){
+        if (n==0) return;
 
         arr[1] = arr[n];
         n--;
-        heapify(1);
-        return ret;
+        heap_bottom_up();
     }
 
-    heap(int* a, int n){
 
-        max_size = n;
-        this->max_size = max_size;
+    /*
+        CONSTRUCTORS
+    */
+
+    // BOTTOM-UP
+    heap(int* a, int n, int max_size = NULL){
+
+        if (max_size==NULL)
+        {
+            max_size = n;
+        }
         
-        this->arr = a;
+        // copy array pushing NULL at 0
+        this->arr = new int[n+1];
+        arr[0] = NULL;
+        for (int i = 1; i < n+1; i++) arr[i] = a[i];
+        
         this->n=n;
-        heap_bottom_up();
+        this->max_size = max_size;
 
+        heap_bottom_up();
+    }
+    // TOP-DOWN
+    heap(int max_size = NULL){
+        if (max_size = NULL)
+        {
+            max_size = 10e5;
+        }
+
+        this->arr = new int[max_size];
+        arr[0] = NULL;
+
+        this->n = 0;
     }
 };
 
@@ -154,35 +136,26 @@ void heapify(int i_parent){
 
 int main(){
 
-    int t; cin>>t;
+    int* arr = new int[7]{2, 9, 7, 6, 5, 8, 10};
 
-    int n;
-    int* a;
-    
-    while (t--)
-    {
-        cin >> n;
-        a = new int[n+1];
-        a[0] = 0;
+    heap h = heap(arr, 7);
 
-        for (int i = 1; i < n+1; i++)
-        {
-            cin >> a[i];
-        }
+    h.print();
 
-        heap h(a, n);
+    h.remove_root();
 
-        while (h.n >= 2)
-        {
-            int a = h.remove_root();
-            int b = h.remove_root();
-            h.insert(a+b-1);
-        }
-        cout << h.remove_root() << '\n';
-        
-        delete[] a;
-    }
-    
+    h.print();
+
+    h.remove_root();
+
+    h.print();
+
+    h.insert(11);
+    h.print();
+
+    h.insert(1);
+    h.print();
+
 
 
     return 0;
