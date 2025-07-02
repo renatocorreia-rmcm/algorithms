@@ -8,8 +8,8 @@ parent  i//2
 */
 
 /*
-size: não conta com primeiro elemento (null)
-index: conta com primeiro elemento (null, 0)
+size: não conta com primeiro elemento (0)
+index: conta com primeiro elemento (0, 0)
 */
 
 class heap
@@ -40,7 +40,7 @@ public:
 
             bool heapfiyed = false;
             
-            while (!heapfiyed && i_leftchild <=n)
+            while (!heapfiyed && i_leftchild <=n)  // dive parent into biggerchild until heapfy it
             {
                 
                 /*   SET BIGGER CHILD   */
@@ -77,10 +77,9 @@ public:
         int i_parent = k/2;  // parent index
 
         // HEAPIFY
-        
         while (k>1 && arr[i_parent]<arr[k])  // while not root and parent is smaller than current node
         {
-            swap(arr[k], arr[i_parent]);  // swap with parent
+            swap(arr[k], arr[i_parent]);
             k = i_parent;  // move to parent
             i_parent = k/2;  // update parent index
         }
@@ -101,17 +100,17 @@ public:
     */
 
     // BOTTOM-UP
-    heap(int* a, int n, int max_size = NULL){
+    heap(int* a, int n, int max_size = 0){
 
-        if (max_size==NULL)
+        if (max_size==0)
         {
             max_size = n;
         }
         
-        // copy array pushing NULL at 0
+        // copy array pushing 0 at 0
         this->arr = new int[n+1];
-        arr[0] = NULL;
-        for (int i = 1; i < n+1; i++) arr[i] = a[i];
+        arr[0] = 0;
+        for (int i = 0; i < n; i++) arr[i+1] = a[i];
         
         this->n=n;
         this->max_size = max_size;
@@ -119,14 +118,14 @@ public:
         heap_bottom_up();
     }
     // TOP-DOWN
-    heap(int max_size = NULL){
-        if (max_size = NULL)
+    heap(int max_size = 0){
+        if (max_size == 0)
         {
             max_size = 10e5;
         }
 
         this->arr = new int[max_size];
-        arr[0] = NULL;
+        arr[0] = 0;
 
         this->n = 0;
     }
