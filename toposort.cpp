@@ -4,27 +4,34 @@
 
 using namespace std;
 
-void dfs(int v, const vector<vector<int>>& adjacency_list, vector<bool>& visited, stack<int>& order) {  // v: index of current vertex
+void dfs(int v, const vector<vector<int>>& g, vector<bool>& visited, stack<int>& order) {  // v: index of current vertex
     visited[v] = true;
-    for (int u : adjacency_list[v]) { // traverse all adjacent vertices
+    
+    // traverse all adjacent vertices
+    for (int u : g[v]) { 
         if (!visited[u]) {
-            dfs(u, adjacency_list, visited, order);
+            dfs(u, g, visited, order);
         }
     }
+    // exit recursion - add to order
     order.push(v);
 }
 
 
 vector<int> toposort(int n_vertices, const vector<vector<int>>& adjacency_list) {
+    // initialize all visiteds as unvisited
     vector<bool> visited(n_vertices, false);
+
     stack<int> order;
-    for (int i = 0; i < n_vertices; ++i) { // visit all vertices
+    // visit all vertices storing order
+    for (int i = 0; i < n_vertices; ++i) {
         if (!visited[i]) {
             dfs(i, adjacency_list, visited, order);
         }
     }
     vector<int> result;
-    while (!order.empty()) { // pop vertices from stack to get the order
+    // pop vertices from stack to get the order
+    while (!order.empty()) {
         result.push_back(order.top());
         order.pop();
     }

@@ -5,12 +5,12 @@ using namespace std;
 
 
 
-char matrix[2000][2000];
+char matrix[2000][2000];  // constraints
 char tranformations[2000][2000];  // wich transformation was done before reaching that point
 int rows, cols;
 
 
-void print(char m[2000][2000]){
+void print(char m[2000][2000]){  // to print matrix or tranformations
     cout << '\n';
     for (int r=0; r<rows; r++){
         for (int c = 0; c < cols; c++)

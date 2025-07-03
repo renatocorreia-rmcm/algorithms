@@ -19,7 +19,7 @@ public:
     int n;
     int max_size;
 
-    void print(){
+    void print(){  // bfs order
         for (int i = 1; i <= n; i++)
         {
             cout << arr[i] << ' ';
@@ -71,12 +71,11 @@ public:
     }
 
     void insert(int v){  // TOP-DOWN
-        n++;
-        arr[n] = v;  // insert new value at the end of the heap
+        arr[++n] = v;  // insert new value at the end of the heap
+        
+        // HEAPIFY
         int k = n;  // current node index
         int i_parent = k/2;  // parent index
-
-        // HEAPIFY
         while (k>1 && arr[i_parent]<arr[k])  // while not root and parent is smaller than current node
         {
             swap(arr[k], arr[i_parent]);
