@@ -1,71 +1,67 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <climits>
+
+#define inf 100000
 
 using namespace std;
 
-const int INF = INT_MAX;
 
-// Edge structure: destination and weight
-struct Edge {
-    int to;
-    int weight;
-};
+typedef pair<int, int> pii; // (distance, node)
 
-// Min-heap item: (distance, parent, vertex)
-struct Item {
-    int dist, parent, vertex;
-    bool operator>(const Item& other) const {
-        return dist > other.dist;
-    }
-};
 
-void dijkstra(int s, const vector<vector<Edge>>& G, vector<int>& D, vector<int>& P) {
-    int n = G.size();
-    vector<bool> visited(n, false);
-    D.assign(n, INF);
-    P.assign(n, -1);
+vector<int> dijkstra(int n, const vector<vector<pii>>& adj, int source) {
+    // Initialize distances to all nodes as infinity
+    vector<int> dist(n, inf);
+    // Min-heap priority queue to select the node with the smallest distance
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    dist[source] = 0;
+    pq.push({0, source});
 
-    // Min-heap: (distance, parent, vertex)
-    priority_queue<Item, vector<Item>, greater<Item>> H;
+    //process nodes in order of increasing distance
+    while (!pq.empty()) {
+        int d = pq.top().first;   // Current distance
+        int u = pq.top().second;  // Current node
+        pq.pop();
 
-    D[s] = 0;
-    H.push({0, s, s});
+        // Skip if we have already found a better path
+        if (d > dist[u]) continue;
 
-    for (int i = 0; i < n; ++i) {
-        Item item;
-
-        // Step 6–9: Find unvisited node with smallest distance
-        do {
-            if (H.empty()) return;
-            item = H.top(); H.pop();
-        } while (visited[item.vertex]);
-
-        int v = item.vertex;
-        visited[v] = true;
-        P[v] = item.parent;
-
-        // Step 11–16: Update neighbors
-        for (const Edge& e : G[v]) {
-            int w = e.to;
-            int weight_vw = e.weight;
-            if (!visited[w] && D[w] > D[v] + weight_vw) {
-                D[w] = D[v] + weight_vw;
-                H.push({D[w], v, w});
+        // Explore all neighbors of the current node
+        for (const auto& edge : adj[u]) {
+            int v = edge.first;   // Neighbor node
+            int w = edge.second;  // Edge weight
+            // If a shorter path to v is found
+            if (dist[v] > dist[u] + w) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
             }
         }
     }
+    return dist;
 }
 
-
-int main(){
+// Example usage
+int main() {
+    int n = 5;
+    vector<vector<pii>> adj(n);
+    // adj[u].push_back({v, weight});
+    adj[0].push_back({1, 10});
+    adj[0].push_back({2, 3});
+    adj[1].push_back({2, 1});
+    adj[1].push_back({3, 2});
+    adj[2].push_back({1, 4});
+    adj[2].push_back({3, 8});
+    adj[2].push_back({4, 2});
+    adj[3].push_back({4, 7});
+    adj[4].push_back({3, 9});
 
     
+    vector<int> dist = dijkstra(n, adj, 0);
 
 
-
-
-
+    for (int i = 0; i < n; ++i) {
+        cout << "Distance from 0 to " << i << ": " << dist[i] << endl;
+    }
     return 0;
 }
