@@ -12,7 +12,12 @@ struct edge{
     int b;
     int w;
 
-    bool operator< ()
+    bool operator< (edge const &e) const {
+        return w < e.w;
+    }
+    bool operator> (edge const &e) const {
+        return w > e.w;
+    }   
 
     edge();
     edge(int a, int b, int w): a(a), b(b), w(w){}
@@ -39,15 +44,30 @@ void kruskal(graph g){
             int w = e.w;
 
             edges.push_back({v, b, w});
-
         }
     }
 
-    sort(edges);
+    sort(edges.begin(), edges.end());
 
+    vector<int> ds(vertices);
 
-    
+    int numMST = vertices;
 
+    while (numMST > 1)
+    {
+        edge e = edges.back(); edges.pop_back();
+        int a = e.a;
+        int b = e.b;
+        int w = e.w;
+
+        if (ds.find(a) != ds.find(b))
+        {
+            union(ds, a, b);
+            g_[a].push_back({a, b, w});
+            numMST--;
+        }
+        
+    }
 }
 
 
