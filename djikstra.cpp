@@ -7,61 +7,109 @@
 using namespace std;
 
 
-typedef pair<int, int> pii; // (distance, node)
+struct edge{
+    int a;  // origin
+    int b;  // destiny
+    int w;  // weight
 
-
-vector<int> dijkstra(int n, const vector<vector<pii>>& adj, int source) {
-    // Initialize distances to all nodes as infinity
-    vector<int> dist(n, inf);
-    // Min-heap priority queue to select the node with the smallest distance
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-    dist[source] = 0;
-    pq.push({0, source});
-
-    //process nodes in order of increasing distance
-    while (!pq.empty()) {
-        int d = pq.top().first;   // Current distance
-        int u = pq.top().second;  // Current node
-        pq.pop();
-
-        // Skip if we have already found a better path
-        if (d > dist[u]) continue;
-
-        // Explore all neighbors of the current node
-        for (const auto& edge : adj[u]) {
-            int v = edge.first;   // Neighbor node
-            int w = edge.second;  // Edge weight
-            // If a shorter path to v is found
-            if (dist[v] > dist[u] + w) {
-                dist[v] = dist[u] + w;
-                pq.push({dist[v], v});
-            }
-        }
+    bool operator<(const edge& e) const{
+        return this->w < e.w;
     }
-    return dist;
+    bool operator>(const edge& e) const{
+        return this->w > e.w;
+    }
+
+    edge(){};
+    edge(int a, int b, int w): a(a), b(b), w(w){}
+};
+
+
+typedef vector<vector<edge>> graph;  // adjacency list
+
+
+
+vector<int> dijkstra(graph g, int source) {
+
+    // parameters
+    
+    int vertices = g.size();
+
+    vector<bool> visited(vertices, 0);
+    vector<int> parents(vertices, -1);
+    vector<int> distance(vertices, inf);
+
+    priority_queue<edge, vector<edge>, greater<edge>> h;
+    
+
+    // start at source
+    distance[source] = 0;
+    h.push({source, source, 0});
+
+    // get v-nearest vertice from source
+    for (int v = 0; v < vertices; v++)
+    {
+        // get smallest unvisited edge from heap
+        edge e;
+        do
+        {
+            if (h.empty()) return distance;
+            
+            e = h.top(); h.pop();
+            
+        } while (visited[e.b]);
+
+        // mark it
+        visited[e.b] = 1;
+        parents[e.b] = e.a;
+
+        // add its unvisited neighbors to heap
+        for (edge neighbor: g[e.b])
+        {
+            int nb = neighbor.b;
+            int nw = neighbor.w;
+
+            if (!visited[nb] && distance[nb] > distance[e.b]+nw)
+            {
+                distance[nb] = distance[e.b] + nw;
+                h.push({e.b, nb, distance[nb]});
+            }
+            
+        }
+        
+        
+    }
+
+    return distance;
+    
 }
 
-// Example usage
+
+
 int main() {
-    int n = 5;
-    vector<vector<pii>> adj(n);
-    // adj[u].push_back({v, weight});
-    adj[0].push_back({1, 10});
-    adj[0].push_back({2, 3});
-    adj[1].push_back({2, 1});
-    adj[1].push_back({3, 2});
-    adj[2].push_back({1, 4});
-    adj[2].push_back({3, 8});
-    adj[2].push_back({4, 2});
-    adj[3].push_back({4, 7});
-    adj[4].push_back({3, 9});
-
     
-    vector<int> dist = dijkstra(n, adj, 0);
+    int vertices; cin >> vertices;
+    int edges; cin >> edges;
 
+    graph g(vertices);
 
-    for (int i = 0; i < n; ++i) {
-        cout << "Distance from 0 to " << i << ": " << dist[i] << endl;
+    for (int e = 0; e < edges; e++)
+    {
+        int a; cin >> a;
+        int b; cin >> b;
+        int w; cin >> w;
+
+        g[a].push_back({a,b,w});
     }
+
+
+    int source = 0;
+
+    vector<int> distances = dijkstra(g, source);  
+    
+
+    for (int v = 0; v < vertices; ++v) {
+        cout << "Distance from " << source << " to " << v << ": " << distances[v] << '\n';
+    }
+
     return 0;
 }
