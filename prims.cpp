@@ -40,14 +40,15 @@ vector<int> prim(const graph& g){
     priority_queue<edge, vector<edge>, greater<edge>> h;
 
 
-    h.push({0,0,0}); distances[0] = 0;
+    // start node
+    h.push({0,0,0});
+    distances[0] = 0;
     
-    // iterate over each vertice
+    // get nearest vertice from fringe
     for (int i = 0; i < vertices; i++)
     {
 
         // get smaller unvisited edge on fringe
-
         edge edge;
         do
         {
@@ -58,8 +59,8 @@ vector<int> prim(const graph& g){
 
         } while (visited[edge.b]);
         
-        int p = edge.a;
-        int v = edge.b;
+        int p = edge.a;  // parent
+        int v = edge.b;  // child
 
 
         // mark it
@@ -67,7 +68,7 @@ vector<int> prim(const graph& g){
         parent[v] = p;
 
 
-        // add new neighbors to heap
+        // add its neighbors to heap
         for (const struct edge& e : g[v])
         {
             int nb = e.b;
