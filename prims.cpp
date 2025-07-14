@@ -41,6 +41,7 @@ vector<int> prim(const graph& g){
 
 
     h.push({0,0,0}); distances[0] = 0;
+    
     // iterate over each vertice
     for (int i = 0; i < vertices; i++)
     {
@@ -66,7 +67,7 @@ vector<int> prim(const graph& g){
         parent[v] = p;
 
 
-        // neighbors
+        // add new neighbors to heap
         for (const struct edge& e : g[v])
         {
             int nb = e.b;
