@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void dfs(int v, const vector<vector<int>>& g, vector<bool>& visited, stack<int>& order) {  // v: index of current vertex
+void dfs(int v, const vector<vector<int>>& g, vector<bool>& visited, stack<int>& order) {
     visited[v] = true;
     
     // traverse all adjacent vertices
@@ -19,6 +19,9 @@ void dfs(int v, const vector<vector<int>>& g, vector<bool>& visited, stack<int>&
 
 
 vector<int> toposort(int n_vertices, const vector<vector<int>>& adjacency_list) {
+
+    //int n_vertices = adjacency_list.size();
+
     // initialize all visiteds as unvisited
     vector<bool> visited(n_vertices, false);
 
