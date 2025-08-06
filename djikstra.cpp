@@ -12,6 +12,7 @@ struct edge{
     int b;  // destiny
     int w;  // weight
 
+    /* weight operators */
     bool operator<(const edge& e) const{
         return this->w < e.w;
     }
@@ -32,13 +33,13 @@ vector<int> dijkstra(graph g, int source) {
 
     // parameters
     
-    int vertices = g.size();
+    int n_vertices = g.size();
 
-    vector<bool> visited(vertices, 0);
-    vector<int> parents(vertices, -1);
-    vector<int> distance(vertices, inf);
+    vector<bool> visited(n_vertices, 0);
+    vector<int> parents(n_vertices, -1);
+    vector<int> distance(n_vertices, inf);
 
-    priority_queue<edge, vector<edge>, greater<edge>> h;
+    priority_queue<edge, vector<edge>, greater<edge>> h;  // to pick minimum edges
     
 
     // start at source
@@ -46,13 +47,13 @@ vector<int> dijkstra(graph g, int source) {
     h.push({source, source, 0});
 
     // get v-nearest vertice from source
-    for (int v = 0; v < vertices; v++)
+    for (int v = 0; v < n_vertices; v++)
     {
-        // get smallest unvisited edge from heap
+        // get smallest unvisited edge from heap 
         edge e;
         do
         {
-            if (h.empty()) return distance;
+            if (h.empty()) return distance;  // empty fringe - some distances may still be inf
             
             e = h.top(); h.pop();
             
@@ -62,21 +63,23 @@ vector<int> dijkstra(graph g, int source) {
         visited[e.b] = 1;
         parents[e.b] = e.a;
 
-        // add its unvisited neighbors to heap
+        // add its unvisited neighbors to heap - increase fringe
         for (edge neighbor: g[e.b])
         {
+
             int nb = neighbor.b;
             int nw = neighbor.w;
 
-            if (!visited[nb] && distance[nb] > distance[e.b]+nw)
+            if (!visited[nb] &&  // unvisited
+            distance[nb] > distance[e.b]+nw)  // (current dist to nb.b) > (current dist to nb.a + weight of new edge found)
             {
+                // use new edge 
                 distance[nb] = distance[e.b] + nw;
                 h.push({e.b, nb, distance[nb]});
             }
             
         }
-        
-        
+
     }
 
     return distance;
