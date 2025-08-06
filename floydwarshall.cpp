@@ -8,33 +8,37 @@ const int V = 4;
 
 
 void floydwarshall(int graph[V][V]) {
-    int dp[V + 1][V][V];
+    int memo[V + 1][V][V];  // array of matrices to keep shortest pairs between vertices j and k walking at most i+1 edges
+
 
     for (int i = 0; i < V; i++)
         for (int j = 0; j < V; j++)
-            dp[0][i][j] = graph[i][j];
+            memo[0][i][j] = graph[i][j];  // shortest distance walking at most 1 edge is the edge itself (if it exists, else: INFINITY)
 
-    for (int k = 1; k <= V; k++)
-        for (int i = 0; i < V; i++)
-            for (int j = 0; j < V; j++) {
+    for (int i = 1; i <= V; i++)
+        for (int j = 0; j < V; j++)
+            for (int k = 0; k < V; k++) {
 
                 if (
-                    dp[k-1][i][k-1] < INFINITY 
-                    && dp[k-1][k-1][j] < INFINITY
+                    memo[i-1][j][k] < INFINITY 
+                    && memo[i-1][][k] < INFINITY
                     )
                 {
-                    dp[k][i][j] = min(dp[k-1][i][j], dp[k-1][i][k-1] + dp[k-1][k-1][j]);
+                    memo[i][j][k] = min(
+                        memo[i-1][j][k],  // reuse best distance calculated so far
+                        memo[i-1][j][i] + memo[i][i-1][k]  // new distance, from j->k = j->(i-1)->k
+                        );
                 }
 
                 else
                 {
-                    dp[k][i][j] = dp[k-1][i][j];
+                    memo[i][j][k] = memo[i-1][j][k];
                 }
             }
 
     for (int i = 0; i < V; i++)
         for (int j = 0; j < V; j++)
-            graph[i][j] = dp[V][i][j];
+            graph[i][j] = memo[V][i][j];
 }
 
 int main() {
