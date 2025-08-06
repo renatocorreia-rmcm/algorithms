@@ -18,9 +18,9 @@ void dfs(int v, const vector<vector<int>>& g, vector<bool>& visited, stack<int>&
 }
 
 
-vector<int> toposort(int n_vertices, const vector<vector<int>>& adjacency_list) {
+vector<int> toposort(const vector<vector<int>>& adjacency_list) {
 
-    //int n_vertices = adjacency_list.size();
+    int n_vertices = adjacency_list.size();
 
     // initialize all visiteds as unvisited
     vector<bool> visited(n_vertices, false);
@@ -53,7 +53,7 @@ int main() {
         adjacency_list[u].push_back(v);
     }
 
-    vector<int> order = toposort(n_vertices, adjacency_list);
+    vector<int> order = toposort(adjacency_list);
     
     for (int v : order) {
         cout << v << " ";
